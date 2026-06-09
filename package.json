@@ -1,0 +1,16 @@
+{
+  "name": "slatesignal",
+  "version": "0.3.0",
+  "private": true,
+  "description": "MLB matchup intelligence and model-pick dashboard.",
+  "main": "server.js",
+  "scripts": {
+    "start": "node server.js",
+    "check": "node --check server.js && node --check app.js",
+    "job:daily": "node scripts/run-job.js daily",
+    "job:settle": "node scripts/run-job.js settle"
+  },
+  "engines": {
+    "node": ">=20"
+  }
+}

@@ -1,0 +1,403 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>SlateSignal | MLB Matchup Intelligence</title>
+    <meta
+      name="description"
+      content="SlateSignal is an MLB analytics dashboard for matchup intelligence, market comparison, and model tracking."
+    />
+    <link rel="stylesheet" href="styles.css" />
+  </head>
+  <body>
+    <header class="app-shell">
+      <a class="brand" href="#dashboard" aria-label="SlateSignal dashboard">
+        <span class="brand-mark">S</span>
+        <span>SlateSignal</span>
+      </a>
+      <nav class="nav" aria-label="Primary navigation">
+        <a href="#dashboard">Dashboard</a>
+        <a href="#today">Today</a>
+        <a href="#backtest">Backtest</a>
+        <a href="#account">Account</a>
+      </nav>
+      <button class="icon-button" id="themeToggle" type="button" aria-label="Toggle display density">
+        ◐
+      </button>
+    </header>
+
+    <main>
+      <section class="hero-dashboard" id="dashboard" aria-label="SlateSignal dashboard">
+        <img
+          class="sports-visual"
+          src="assets/mlb-analytics.png"
+          alt="Baseball field and dugout with a tablet displaying abstract matchup analytics"
+        />
+        <div class="visual-scrim"></div>
+
+        <div class="dashboard-grid">
+          <section class="control-panel" aria-label="Matchup controls">
+            <p class="eyebrow">MLB intelligence</p>
+            <h1>Sports matchup intelligence for serious fans.</h1>
+            <p class="summary">
+              Compare MLB matchups, monitor model edges, review probable pitcher context,
+              and track whether the numbers hold up after first pitch.
+            </p>
+            <div class="model-meta">
+              <span id="modelVersion">Model v0.4 calibrated pregame</span>
+              <span>Informational, not betting advice</span>
+            </div>
+
+            <div class="filters">
+              <label>
+                Home team
+                <select id="homeTeam"></select>
+              </label>
+              <label>
+                Away team
+                <select id="awayTeam"></select>
+              </label>
+            </div>
+            <p class="data-source" id="dataSource">Loading MLB data...</p>
+          </section>
+
+          <section class="score-card" aria-label="Projected edge">
+            <div class="score-header">
+              <span id="sportLabel">MLB</span>
+              <strong id="matchupLabel">Select a matchup</strong>
+            </div>
+            <div class="edge-number" id="edgeNumber">+0.0</div>
+            <p id="edgeSummary">Projected edge will update after teams are selected.</p>
+            <div class="confidence-wrap" aria-label="Model signal">
+              <div class="confidence-bar">
+                <span id="confidenceBar"></span>
+              </div>
+              <small id="confidenceText">Model signal 0%</small>
+            </div>
+          </section>
+        </div>
+      </section>
+
+      <section class="workspace" id="today" aria-label="Today's MLB dashboard">
+        <div class="section-heading">
+          <p class="eyebrow">Today</p>
+          <h2>Today's model, picks, and matchup context.</h2>
+          <p>
+            This first version uses MLB team, schedule, and standings data.
+            The model combines team strength, run profile, recent form,
+            home field, and probable pitcher context.
+          </p>
+        </div>
+
+        <section class="today-panel" aria-label="Today's MLB games">
+          <div class="panel-title compact-title">
+            <h3>Today's MLB slate</h3>
+            <span>Live data</span>
+          </div>
+          <div class="games-list" id="gamesList">
+            <p class="empty-state">Loading today's games...</p>
+          </div>
+        </section>
+
+        <section class="best-bets-panel" aria-label="Favorite bets">
+          <div class="panel-title compact-title">
+            <h3>Favorite bets</h3>
+            <span>Model picks</span>
+          </div>
+          <div class="bet-of-day" id="betOfDay">
+            <span>Bet of the day</span>
+            <strong>No pick yet</strong>
+            <p>Load today's MLB slate to see the strongest model lean.</p>
+          </div>
+          <div class="bets-list" id="betsList">
+            <p class="empty-state">Loading game picks...</p>
+          </div>
+            <div class="record-card" id="recordCard">
+              <span>Model record</span>
+            <strong>No finals</strong>
+            <p>Saved picks will settle after MLB marks games final.</p>
+            </div>
+        </section>
+
+        <div class="simulator-layout">
+          <section class="panel factor-panel" aria-label="Automatic model factors">
+            <div class="panel-title">
+              <h3>Automatic factors</h3>
+              <span>MLB data</span>
+            </div>
+            <div class="factor-row">
+              <span>Win pct gap</span>
+              <strong id="winPctGap">Loading</strong>
+            </div>
+            <div class="factor-row">
+              <span>Run diff gap</span>
+              <strong id="runDiffGap">Loading</strong>
+            </div>
+            <div class="factor-row">
+              <span>Pitcher edge</span>
+              <strong id="pitcherEdge">Loading</strong>
+            </div>
+          </section>
+
+          <section class="panel insight-panel" aria-label="Generated insight">
+            <div class="panel-title">
+              <h3>Generated read</h3>
+              <span id="watchTag">Pregame model</span>
+            </div>
+            <p id="generatedRead">
+              Choose teams to generate a matchup read with strengths, risks,
+              and a premium product hook.
+            </p>
+          </section>
+
+          <section class="panel stat-panel" aria-label="Team comparison">
+            <div class="stat-row live-row">
+              <span>Live status</span>
+              <strong id="liveStatus">Pregame</strong>
+            </div>
+            <div class="stat-row">
+              <span>Offense gap</span>
+              <strong id="offenseGap">Loading</strong>
+            </div>
+            <div class="stat-row">
+              <span>Run prevention gap</span>
+              <strong id="defenseGap">Loading</strong>
+            </div>
+            <div class="stat-row">
+              <span>Records</span>
+              <strong id="volatility">Loading</strong>
+            </div>
+            <div class="stat-row">
+              <span>Win pct</span>
+              <strong id="fanInterest">Loading</strong>
+            </div>
+          </section>
+        </div>
+
+        <section class="odds-panel" aria-label="Sportsbook comparison">
+          <div class="section-heading odds-heading">
+            <p class="eyebrow">Market edge</p>
+            <h2>Compare the model to DraftKings and FanDuel.</h2>
+            <p id="oddsSource">
+              Add an odds API key to compare the model against real sportsbook lines.
+            </p>
+            <p class="live-note">
+              Live scores refresh from MLB about once per minute. Live DraftKings/FanDuel odds require an odds feed.
+            </p>
+          </div>
+          <div class="odds-grid">
+            <article class="odds-card">
+              <span>Model fair line</span>
+              <strong id="fairLine">N/A</strong>
+              <p id="fairLineDetail">The model converts the matchup lean into a fair moneyline.</p>
+            </article>
+            <article class="odds-card">
+              <span>DraftKings</span>
+              <strong id="draftkingsLine">Key needed</strong>
+              <p id="draftkingsEdge">Add The Odds API key in config.env to load DraftKings.</p>
+              <label class="odds-input">
+                Team
+                <select id="draftkingsTeam"></select>
+              </label>
+              <label class="odds-input">
+                Manual moneyline
+                <input id="draftkingsManual" type="number" placeholder="-125 or +110" />
+              </label>
+            </article>
+            <article class="odds-card">
+              <span>FanDuel</span>
+              <strong id="fanduelLine">Key needed</strong>
+              <p id="fanduelEdge">Add The Odds API key in config.env to load FanDuel.</p>
+              <label class="odds-input">
+                Team
+                <select id="fanduelTeam"></select>
+              </label>
+              <label class="odds-input">
+                Manual moneyline
+                <input id="fanduelManual" type="number" placeholder="-125 or +110" />
+              </label>
+            </article>
+          </div>
+          <div class="explain-box">
+            <h3>Why the odds are what they are</h3>
+            <p id="oddsExplanation">
+              Select a matchup to see how the model turns team strength into a fair moneyline and compares it to the sportsbook number.
+            </p>
+          </div>
+        </section>
+
+        <section class="player-panel" aria-label="Player performance projections">
+          <div class="section-heading odds-heading">
+            <p class="eyebrow">Player projections</p>
+            <h2>Probable pitcher performance.</h2>
+            <p>
+              These projections use MLB probable pitchers and season pitching stats.
+              They are useful before we add paid player-prop odds.
+            </p>
+          </div>
+          <div class="player-grid">
+            <article class="player-card">
+              <span id="awayPitcherTeam">Away starter</span>
+              <h3 id="awayPitcherName">TBD</h3>
+              <dl>
+                <div><dt>Projected IP</dt><dd id="awayPitcherIp">N/A</dd></div>
+                <div><dt>Projected K</dt><dd id="awayPitcherK">N/A</dd></div>
+                <div><dt>ER risk</dt><dd id="awayPitcherEr">N/A</dd></div>
+                <div><dt>ERA / WHIP</dt><dd id="awayPitcherRate">N/A</dd></div>
+              </dl>
+            </article>
+            <article class="player-card">
+              <span id="homePitcherTeam">Home starter</span>
+              <h3 id="homePitcherName">TBD</h3>
+              <dl>
+                <div><dt>Projected IP</dt><dd id="homePitcherIp">N/A</dd></div>
+                <div><dt>Projected K</dt><dd id="homePitcherK">N/A</dd></div>
+                <div><dt>ER risk</dt><dd id="homePitcherEr">N/A</dd></div>
+                <div><dt>ERA / WHIP</dt><dd id="homePitcherRate">N/A</dd></div>
+              </dl>
+            </article>
+          </div>
+          <div class="matchup-grid">
+            <article class="matchup-card">
+              <span>Visitor bats vs home starter</span>
+              <p id="awayBatsMatchup">Select a scheduled game to see the matchup read.</p>
+            </article>
+            <article class="matchup-card">
+              <span>Home bats vs visitor starter</span>
+              <p id="homeBatsMatchup">Select a scheduled game to see the matchup read.</p>
+            </article>
+            <article class="matchup-card">
+              <span>Starter duel</span>
+              <p id="starterDuel">Probable pitcher comparison will appear here.</p>
+            </article>
+          </div>
+        </section>
+
+        <section class="chat-panel" aria-label="AI analyst chat">
+          <div class="section-heading odds-heading">
+            <p class="eyebrow">AI analyst</p>
+            <h2>Ask why the numbers look this way.</h2>
+            <p>
+              Ask about the selected matchup, fair line, pitcher edge, matchup notes,
+              or manually entered odds. The local analyst only uses data shown here.
+            </p>
+          </div>
+          <div class="chat-box" id="chatMessages">
+            <div class="chat-message analyst">
+              I only use the matchup data shown on this page. Ask me something like “Why is this the fair line?” or “Which factor matters most?”
+            </div>
+          </div>
+          <form class="chat-form" id="chatForm">
+            <input
+              id="chatInput"
+              type="text"
+              placeholder="Ask why the model likes this side..."
+              autocomplete="off"
+            />
+            <button type="submit">Ask</button>
+          </form>
+        </section>
+
+        <section class="backtest-panel" id="backtest" aria-label="Backtest">
+          <div class="section-heading odds-heading">
+            <p class="eyebrow">Backtest</p>
+            <h2>Measure the model against saved picks.</h2>
+            <p>
+              This combines the app's saved daily picks with a recent historical
+              MLB sample using standings from before each game date.
+            </p>
+          </div>
+          <div class="backtest-summary" id="backtestSummary">
+            <article><span>Saved picks</span><strong>No finals</strong><p>No settled picks yet.</p></article>
+            <article><span>Pending</span><strong>0</strong><p>Waiting for finals.</p></article>
+            <article><span>Captured ROI</span><strong>N/A</strong><p>Waiting for saved odds.</p></article>
+            <article><span>Model version</span><strong>v0.4</strong><p>Calibrated pregame.</p></article>
+          </div>
+          <div class="historical-backtest" id="historicalBacktest">
+            <p class="empty-state">Historical model test will appear here.</p>
+          </div>
+          <div class="backtest-days" id="backtestDays">
+            <p class="empty-state">Saved pick history will appear here.</p>
+          </div>
+        </section>
+      </section>
+
+      <section class="market-section" id="account" aria-label="Account and subscription">
+        <div class="section-heading">
+          <p class="eyebrow">Account</p>
+          <h2>Save picks, unlock pro features, and subscribe.</h2>
+          <p>
+            The local version uses a demo account. Production can connect Supabase
+            or Clerk for authentication and Stripe for subscriptions.
+          </p>
+        </div>
+
+        <div class="account-grid">
+          <article class="account-card">
+            <span>Demo account</span>
+            <h3 id="accountStatus">Signed out</h3>
+            <form id="accountForm">
+              <label>
+                Email
+                <input id="accountEmail" type="email" placeholder="you@example.com" />
+              </label>
+              <button type="submit">Save demo account</button>
+            </form>
+          </article>
+          <article class="account-card">
+            <span>Subscription</span>
+            <h3 id="subscriptionStatus">Free plan</h3>
+            <p id="subscriptionDetail">
+              Pro checkout is scaffolded. Add Stripe environment variables on a deployed server to activate payments.
+            </p>
+            <button id="checkoutButton" type="button">Start Pro checkout</button>
+          </article>
+        </div>
+
+        <div class="market-grid">
+          <article>
+            <span class="plan-badge">Free</span>
+            <h3>Fan dashboard</h3>
+            <p>Basic matchup ratings, simple projections, and shareable game previews.</p>
+            <strong>$0</strong>
+          </article>
+          <article class="featured-plan">
+            <span class="plan-badge">Pro</span>
+            <h3>Premium edge reports</h3>
+            <p>Advanced filters, saved watchlists, alerts, fantasy overlays, and deeper trend cards.</p>
+            <strong>$9/mo</strong>
+          </article>
+          <article>
+            <span class="plan-badge">Teams</span>
+            <h3>Creator and coach tools</h3>
+            <p>Exportable reports, branded embeds, player notes, and private data uploads.</p>
+            <strong>$29/mo</strong>
+          </article>
+        </div>
+      </section>
+
+      <section class="interview-section" aria-label="Interview explanation">
+        <div>
+          <p class="eyebrow">Interview angle</p>
+          <h2>Why this is a strong project to talk about.</h2>
+        </div>
+        <ul>
+          <li>It has a clear audience: fans, fantasy players, sports creators, and small coaching staffs.</li>
+          <li>It can grow technically: data ingestion, APIs, prediction models, auth, payments, and alerts.</li>
+          <li>It can grow as a business: free dashboard, paid research reports, alerts, and creator tools.</li>
+        </ul>
+      </section>
+
+      <section class="disclaimer-section" aria-label="Disclaimer">
+        <p>
+          SlateSignal outputs are informational and experimental. They are not betting advice.
+          The model must be backtested and compared against closing lines before any strategy
+          should be trusted.
+        </p>
+      </section>
+    </main>
+
+    <script src="app.js"></script>
+  </body>
+</html>

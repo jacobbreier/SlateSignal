@@ -20,6 +20,7 @@
         <a href="#dashboard">Dashboard</a>
         <a href="#today">Today</a>
         <a href="#backtest">Backtest</a>
+        <a href="#methodology">Methodology</a>
         <a href="#account">Account</a>
       </nav>
       <button class="icon-button" id="themeToggle" type="button" aria-label="Toggle display density">
@@ -79,10 +80,39 @@
         </div>
       </section>
 
+      <section class="project-section" id="project" aria-label="Project overview">
+        <div class="section-heading">
+          <p class="eyebrow">Project overview</p>
+          <h2>A deployed MLB analytics product built around live data.</h2>
+          <p>
+            SlateSignal is designed as a portfolio-quality sports analytics app:
+            it pulls live MLB data, generates conservative matchup signals, explains
+            the model inputs, tracks saved leans, and compares fair lines to market prices.
+          </p>
+        </div>
+        <div class="project-grid">
+          <article>
+            <span>Problem</span>
+            <h3>Sports dashboards often show numbers without context.</h3>
+            <p>SlateSignal focuses on the why: team form, run profile, starter context, model confidence, and fair-line comparison in one workflow.</p>
+          </article>
+          <article>
+            <span>Build</span>
+            <h3>Node app with live MLB data and a browser-first dashboard.</h3>
+            <p>The app uses a small Node server, MLB Stats API data, a conservative model layer, local analyst explanations, and Render deployment.</p>
+          </article>
+          <article>
+            <span>Product path</span>
+            <h3>From portfolio project to paid research tool.</h3>
+            <p>The roadmap includes persistent accounts, saved watchlists, historical odds, lineup data, alerts, and Stripe-powered paid tiers.</p>
+          </article>
+        </div>
+      </section>
+
       <section class="workspace" id="today" aria-label="Today's MLB dashboard">
         <div class="section-heading">
           <p class="eyebrow">Today</p>
-          <h2>Today's model, picks, and matchup context.</h2>
+          <h2>Today's model, leans, and matchup context.</h2>
           <p>
             This first version uses MLB team, schedule, and standings data.
             The model combines team strength, run profile, recent form,
@@ -100,23 +130,23 @@
           </div>
         </section>
 
-        <section class="best-bets-panel" aria-label="Favorite bets">
+        <section class="best-bets-panel" aria-label="Top model leans">
           <div class="panel-title compact-title">
-            <h3>Favorite bets</h3>
-            <span>Model picks</span>
+            <h3>Top model leans</h3>
+            <span>Research signals</span>
           </div>
           <div class="bet-of-day" id="betOfDay">
-            <span>Bet of the day</span>
-            <strong>No pick yet</strong>
+            <span>Top signal</span>
+            <strong>No lean yet</strong>
             <p>Load today's MLB slate to see the strongest model lean.</p>
           </div>
           <div class="bets-list" id="betsList">
-            <p class="empty-state">Loading game picks...</p>
+            <p class="empty-state">Loading model leans...</p>
           </div>
             <div class="record-card" id="recordCard">
               <span>Model record</span>
             <strong>No finals</strong>
-            <p>Saved picks will settle after MLB marks games final.</p>
+            <p>Saved leans will settle after MLB marks games final.</p>
             </div>
         </section>
 
@@ -147,7 +177,7 @@
             </div>
             <p id="generatedRead">
               Choose teams to generate a matchup read with strengths, risks,
-              and a premium product hook.
+              and a clear model explanation.
             </p>
           </section>
 
@@ -178,7 +208,7 @@
         <section class="odds-panel" aria-label="Sportsbook comparison">
           <div class="section-heading odds-heading">
             <p class="eyebrow">Market edge</p>
-            <h2>Compare the model to DraftKings and FanDuel.</h2>
+            <h2>Compare the model to market prices.</h2>
             <p id="oddsSource">
               Add an odds API key to compare the model against real sportsbook lines.
             </p>
@@ -222,7 +252,7 @@
           <div class="explain-box">
             <h3>Why the odds are what they are</h3>
             <p id="oddsExplanation">
-              Select a matchup to see how the model turns team strength into a fair moneyline and compares it to the sportsbook number.
+              Select a matchup to see how the model turns team strength into a fair moneyline and compares it to a market price.
             </p>
           </div>
         </section>
@@ -302,14 +332,14 @@
         <section class="backtest-panel" id="backtest" aria-label="Backtest">
           <div class="section-heading odds-heading">
             <p class="eyebrow">Backtest</p>
-            <h2>Measure the model against saved picks.</h2>
+            <h2>Measure the model against saved leans.</h2>
             <p>
-              This combines the app's saved daily picks with a recent historical
+              This combines the app's saved daily leans with a recent historical
               MLB sample using standings from before each game date.
             </p>
           </div>
           <div class="backtest-summary" id="backtestSummary">
-            <article><span>Saved picks</span><strong>No finals</strong><p>No settled picks yet.</p></article>
+            <article><span>Saved leans</span><strong>No finals</strong><p>No settled leans yet.</p></article>
             <article><span>Pending</span><strong>0</strong><p>Waiting for finals.</p></article>
             <article><span>Captured ROI</span><strong>N/A</strong><p>Waiting for saved odds.</p></article>
             <article><span>Model version</span><strong>v0.4</strong><p>Calibrated pregame.</p></article>
@@ -318,18 +348,59 @@
             <p class="empty-state">Historical model test will appear here.</p>
           </div>
           <div class="backtest-days" id="backtestDays">
-            <p class="empty-state">Saved pick history will appear here.</p>
+            <p class="empty-state">Saved lean history will appear here.</p>
           </div>
         </section>
       </section>
 
+      <section class="methodology-section" id="methodology" aria-label="Model methodology">
+        <div class="section-heading">
+          <p class="eyebrow">Methodology</p>
+          <h2>How SlateSignal creates a model lean.</h2>
+          <p>
+            The model is intentionally conservative. It is built to create research signals,
+            not certainty, and every output should be judged against historical results and market prices.
+          </p>
+        </div>
+        <div class="methodology-grid">
+          <article>
+            <span>Inputs</span>
+            <ul>
+              <li>Team winning percentage and Pythagorean strength</li>
+              <li>Recent form from last-ten records</li>
+              <li>Run differential, offense, and run prevention</li>
+              <li>Home-field adjustment</li>
+              <li>Probable starter ERA, WHIP, strikeouts, and workload</li>
+            </ul>
+          </article>
+          <article>
+            <span>Calibration</span>
+            <ul>
+              <li>Probabilities are regressed toward 50/50</li>
+              <li>Model probabilities are capped between 42% and 58%</li>
+              <li>Signal strength is capped to avoid false precision</li>
+              <li>Saved leans are settled only after MLB marks games final</li>
+            </ul>
+          </article>
+          <article>
+            <span>Known gaps</span>
+            <ul>
+              <li>No bullpen fatigue model yet</li>
+              <li>No weather, umpire, or park-factor layer yet</li>
+              <li>No confirmed batting-order model yet</li>
+              <li>Historical ROI needs a paid closing-odds provider</li>
+            </ul>
+          </article>
+        </div>
+      </section>
+
       <section class="market-section" id="account" aria-label="Account and subscription">
         <div class="section-heading">
-          <p class="eyebrow">Account</p>
-          <h2>Save picks, unlock pro features, and subscribe.</h2>
+          <p class="eyebrow">Product roadmap</p>
+          <h2>Accounts and paid tools are the next production layer.</h2>
           <p>
-            The local version uses a demo account. Production can connect Supabase
-            or Clerk for authentication and Stripe for subscriptions.
+            The current site is a working analytics product. The account and pricing
+            components below show the planned subscription path, not an active checkout flow.
           </p>
         </div>
 
@@ -346,12 +417,12 @@
             </form>
           </article>
           <article class="account-card">
-            <span>Subscription</span>
+            <span>Subscription roadmap</span>
             <h3 id="subscriptionStatus">Free plan</h3>
             <p id="subscriptionDetail">
-              Pro checkout is scaffolded. Add Stripe environment variables on a deployed server to activate payments.
+              Checkout is intentionally disabled until persistent accounts, terms, and payment settings are production-ready.
             </p>
-            <button id="checkoutButton" type="button">Start Pro checkout</button>
+            <button id="checkoutButton" type="button">Preview checkout status</button>
           </article>
         </div>
 

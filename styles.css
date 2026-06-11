@@ -310,6 +310,8 @@ select {
 }
 
 .workspace,
+.project-section,
+.methodology-section,
 .market-section,
 .interview-section,
 .disclaimer-section {
@@ -331,6 +333,64 @@ select {
 .live-note {
   color: var(--lime);
   font-weight: 800;
+}
+
+.project-section {
+  background: #ffffff;
+}
+
+.project-grid,
+.methodology-grid {
+  display: grid;
+  gap: 16px;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+}
+
+.project-grid article,
+.methodology-grid article {
+  background: #f8fbff;
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  box-shadow: var(--shadow);
+  padding: 24px;
+}
+
+.project-grid span,
+.methodology-grid span {
+  color: var(--lime);
+  display: block;
+  font-size: 0.76rem;
+  font-weight: 900;
+  margin-bottom: 16px;
+  text-transform: uppercase;
+}
+
+.project-grid h3 {
+  font-size: 1.38rem;
+  line-height: 1.18;
+  margin-bottom: 12px;
+}
+
+.project-grid p {
+  color: var(--muted);
+  line-height: 1.58;
+  margin: 0;
+}
+
+.methodology-section {
+  background: #ffffff;
+  border-top: 1px solid var(--line);
+}
+
+.methodology-grid ul {
+  color: var(--muted);
+  line-height: 1.55;
+  margin: 0;
+  padding-left: 20px;
+}
+
+.methodology-grid li + li {
+  margin-top: 10px;
 }
 
 .simulator-layout {
@@ -1006,6 +1066,8 @@ body.compact .market-grid article {
   .backtest-summary,
   .historical-summary,
   .historical-buckets,
+  .project-grid,
+  .methodology-grid,
   .account-grid,
   .market-grid,
   .interview-section {

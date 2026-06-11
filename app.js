@@ -597,8 +597,8 @@ function renderFavoriteBets() {
     .sort((a, b) => b.score - a.score);
 
   if (!picks.length) {
-    betOfDay.innerHTML = `<span>Bet of the day</span><strong>No pick yet</strong><p>Load today's MLB slate to see the strongest model lean.</p>`;
-    betsList.innerHTML = `<p class="empty-state">No game picks available.</p>`;
+    betOfDay.innerHTML = `<span>Top signal</span><strong>No lean yet</strong><p>Load today's MLB slate to see the strongest model lean.</p>`;
+    betsList.innerHTML = `<p class="empty-state">No model leans available.</p>`;
     return;
   }
 
@@ -607,7 +607,7 @@ function renderFavoriteBets() {
     ? ` Best captured line: ${formatAmerican(top.market.bestMoneyline.price)} at ${escapeHTML(top.market.bestMoneyline.book)}.`
     : " No sportsbook line captured yet.";
   betOfDay.innerHTML = `
-    <span>Bet of the day</span>
+    <span>Top signal</span>
     <strong>${escapeHTML(top.model.leader.name)} moneyline</strong>
     <p>${formatSigned(top.model.edge)} model edge, ${top.model.confidence.toFixed(0)}% signal strength, fair line ${formatAmerican(top.model.fairLine)}.${topLine}</p>
   `;
@@ -672,10 +672,10 @@ async function renderPickLog(existingLog) {
     const settledDays = (log.days || []).filter((day) => day.status === "settled").length;
     const dayLine = (label, day) => day
       ? `${label}: ${day.wins || 0}-${day.losses || 0}, ${day.pending || 0} pending`
-      : `${label}: no saved picks`;
+      : `${label}: no saved leans`;
     const trackedRoi = totals.roi === null || totals.roi === undefined
       ? "No captured odds settled yet"
-      : `${totals.roi > 0 ? "+" : ""}${totals.roi}% ROI on ${totals.pricedPicks} priced picks`;
+      : `${totals.roi > 0 ? "+" : ""}${totals.roi}% ROI on ${totals.pricedPicks} priced leans`;
     const recordHeadline = totals.wins + totals.losses ? `${totals.wins}-${totals.losses}` : "No finals";
     recordCard.innerHTML = `
       <span>Model record</span>
@@ -687,7 +687,7 @@ async function renderPickLog(existingLog) {
     recordCard.innerHTML = `
       <span>Model record</span>
       <strong>Unavailable</strong>
-      <p>Start the Node server to save and settle picks automatically.</p>
+      <p>Start the Node server to save and settle model leans automatically.</p>
     `;
     renderBacktest();
   }
@@ -712,9 +712,9 @@ function renderBacktest(log) {
   const profitLabel = totals.profit > 0 ? `+$${totals.profit.toFixed(2)}` : `$${Number(totals.profit || 0).toFixed(2)}`;
   const savedHeadline = decided ? `${totals.wins}-${totals.losses}` : "No finals";
   backtestSummary.innerHTML = `
-    <article><span>Saved picks</span><strong>${savedHeadline}</strong><p>${winRate} win rate on settled saved picks.</p></article>
+    <article><span>Saved leans</span><strong>${savedHeadline}</strong><p>${winRate} win rate on settled saved leans.</p></article>
     <article><span>Pending</span><strong>${totals.pending}</strong><p>Waiting for MLB finals.</p></article>
-    <article><span>Captured ROI</span><strong>${roiLabel}</strong><p>${profitLabel} profit on ${totals.pricedPicks || 0} picks with saved odds.</p></article>
+    <article><span>Captured ROI</span><strong>${roiLabel}</strong><p>${profitLabel} profit on ${totals.pricedPicks || 0} leans with saved odds.</p></article>
     <article><span>Model version</span><strong>v0.4</strong><p>Calibrated pregame.</p></article>
   `;
 
@@ -722,7 +722,7 @@ function renderBacktest(log) {
 
   const days = log.days || [];
   if (!days.length) {
-    backtestDays.innerHTML = `<p class="empty-state">Saved pick history will appear here.</p>`;
+    backtestDays.innerHTML = `<p class="empty-state">Saved lean history will appear here.</p>`;
     return;
   }
 
@@ -732,7 +732,7 @@ function renderBacktest(log) {
       <article class="backtest-day">
         <span>${escapeHTML(day.date)}</span>
         <strong>${day.wins || 0}-${day.losses || 0}</strong>
-        <p>${day.pending || 0} pending · ${day.picks?.length || 0} saved picks · ${day.roi === null || day.roi === undefined ? "no captured ROI" : `${day.roi > 0 ? "+" : ""}${day.roi}% ROI`} · ${escapeHTML(day.status || "pending")}</p>
+        <p>${day.pending || 0} pending · ${day.picks?.length || 0} saved leans · ${day.roi === null || day.roi === undefined ? "no captured ROI" : `${day.roi > 0 ? "+" : ""}${day.roi}% ROI`} · ${escapeHTML(day.status || "pending")}</p>
       </article>
     `)
     .join("");
@@ -779,7 +779,7 @@ async function renderHistoricalBacktest() {
         <article>
           <span>Estimated ROI</span>
           <strong>${test.roi > 0 ? "+" : ""}${test.roi}%</strong>
-          <p>Flat $100 even-money estimate; saved picks use captured odds when available.</p>
+          <p>Flat $100 even-money estimate; saved leans use captured odds when available.</p>
         </article>
         <article>
           <span>Dates tested</span>
@@ -789,7 +789,7 @@ async function renderHistoricalBacktest() {
       </div>
       <div class="historical-buckets">${buckets}</div>
       <div class="historical-note">${escapeHTML(test.note)}</div>
-      <h3 class="mini-heading">Strongest historical picks</h3>
+      <h3 class="mini-heading">Strongest historical leans</h3>
       <div class="backtest-days">${samplePicks}</div>
     `;
   } catch {
@@ -895,7 +895,7 @@ async function renderAppStatus() {
     subscriptionStatus.textContent = status.payments?.configured ? "Stripe ready" : "Free plan";
     subscriptionDetail.textContent = status.payments?.configured
       ? "Stripe checkout is configured on this server."
-      : "Stripe checkout is scaffolded. Add STRIPE_SECRET_KEY, STRIPE_PRICE_ID, and PUBLIC_BASE_URL in production.";
+      : "Checkout is a roadmap preview. Add auth, terms, STRIPE_SECRET_KEY, STRIPE_PRICE_ID, and PUBLIC_BASE_URL before accepting payments.";
     checkoutButton.disabled = false;
   } catch {
     subscriptionStatus.textContent = "Local mode";
@@ -953,9 +953,9 @@ checkoutButton.addEventListener("click", async () => {
       window.location.href = session.url;
       return;
     }
-    subscriptionDetail.textContent = session.message || "Stripe is not configured yet.";
+    subscriptionDetail.textContent = session.message || "Checkout is not configured yet.";
   } catch {
-    subscriptionDetail.textContent = "Checkout is not available in local mode yet.";
+    subscriptionDetail.textContent = "Checkout preview is unavailable while the server is unreachable.";
   }
 });
 chatForm.addEventListener("submit", (event) => {

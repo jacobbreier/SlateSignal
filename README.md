@@ -59,14 +59,14 @@ It also explains broad batter matchups by comparing each team's run-scoring prof
 The model does not ask for manual slider adjustments. It uses automatic factors from MLB data: win percentage gap, run differential gap, offense gap, run prevention gap, and probable pitcher edge.
 It is intentionally conservative: game probabilities are regressed toward 50/50 and capped between 42% and 58%. Model v0.4 adds Pythagorean strength, recent form, home field, and a more balanced starter component.
 
-Favorite bets:
+Top model leans:
 
-The app ranks every game on today's slate and surfaces a model "bet of the day." This is a model lean based on current data, not betting advice.
+The app ranks every game on today's slate and surfaces a top model signal. This is a model lean based on current data, not betting advice.
 
 Model record:
 
-The app saves each day's model picks in `pick-log.json`. When you open the site later, the server checks MLB final scores and updates the running win/loss record automatically. This works while using the local Node server; a deployed version needs persistent storage so the log survives redeploys.
-Today's games stay pending until MLB marks them Final, so the record shows "No finals" until at least one saved pick settles.
+The app saves each day's model leans in `pick-log.json`. When you open the site later, the server checks MLB final scores and updates the running win/loss record automatically. This works while using the local Node server; a deployed version needs persistent storage so the log survives redeploys.
+Today's games stay pending until MLB marks them Final, so the record shows "No finals" until at least one saved lean settles.
 
 Live scores:
 
@@ -79,10 +79,10 @@ The current chat is a local explanation engine. It answers from the selected mat
 Professional polish:
 
 - The UI shows the current model version.
-- Favorite bets include the top reasons behind each pick.
-- Saved picks include a snapshot of the model factors used at pick time.
-- The record view separates today, yesterday, all-time, and pending picks.
-- The backtest section summarizes saved-pick performance, captured-odds ROI when market lines are available, and a recent MLB historical sample using standings from before each game date.
+- Top model leans include the leading reasons behind each signal.
+- Saved leans include a snapshot of the model factors used at run time.
+- The record view separates today, yesterday, all-time, and pending leans.
+- The backtest section summarizes saved-lean performance, captured-odds ROI when market lines are available, and a recent MLB historical sample using standings from before each game date.
 - The app labels outputs as model signals, not certainty.
 
 Good next build steps:

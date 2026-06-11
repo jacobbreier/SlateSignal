@@ -82,7 +82,7 @@ Professional polish:
 - Top model leans include the leading reasons behind each signal.
 - Saved leans include a snapshot of the model factors used at run time.
 - The record view separates today, yesterday, all-time, and pending leans.
-- The backtest section summarizes saved-lean performance, captured-odds ROI when market lines are available, and a recent MLB historical sample using standings from before each game date.
+- The model results section summarizes saved-lean performance, captured-odds ROI when market lines are available, and a recent MLB sample using standings from before each game date.
 - The app labels outputs as model signals, not certainty.
 
 Good next build steps:
@@ -94,7 +94,7 @@ Good next build steps:
 - Add odds movement from a paid provider
 - Add user accounts and saved watchlists
 - Add Stripe subscriptions for the Pro tier
-- Add a historical sportsbook odds provider so older backtests can use true closing prices instead of flat even-money assumptions
+- Add a historical sportsbook odds provider so older model results can use true closing prices instead of flat even-money assumptions
 - Add shareable matchup report pages for baseball creators
 
 Current data source:

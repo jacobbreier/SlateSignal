@@ -19,7 +19,7 @@
       <nav class="nav" aria-label="Primary navigation">
         <a href="#dashboard">Dashboard</a>
         <a href="#today">Today</a>
-        <a href="#backtest">Backtest</a>
+        <a href="#results">Results</a>
         <a href="#methodology">Methodology</a>
         <a href="#account">Account</a>
       </nav>
@@ -329,13 +329,13 @@
           </form>
         </section>
 
-        <section class="backtest-panel" id="backtest" aria-label="Backtest">
+        <section class="backtest-panel" id="results" aria-label="Model results">
           <div class="section-heading odds-heading">
-            <p class="eyebrow">Backtest</p>
-            <h2>Measure the model against saved leans.</h2>
+            <p class="eyebrow">Model results</p>
+            <h2>Track how SlateSignal performs over time.</h2>
             <p>
-              This combines the app's saved daily leans with a recent historical
-              MLB sample using standings from before each game date.
+              This combines the app's saved daily leans with a recent MLB sample
+              using standings from before each game date.
             </p>
           </div>
           <div class="backtest-summary" id="backtestSummary">
@@ -345,7 +345,7 @@
             <article><span>Model version</span><strong>v0.4</strong><p>Calibrated pregame.</p></article>
           </div>
           <div class="historical-backtest" id="historicalBacktest">
-            <p class="empty-state">Historical model test will appear here.</p>
+            <p class="empty-state">Recent model sample will appear here.</p>
           </div>
           <div class="backtest-days" id="backtestDays">
             <p class="empty-state">Saved lean history will appear here.</p>
@@ -463,7 +463,7 @@
       <section class="disclaimer-section" aria-label="Disclaimer">
         <p>
           SlateSignal outputs are informational and experimental. They are not betting advice.
-          The model must be backtested and compared against closing lines before any strategy
+          The model must be reviewed against saved results and closing lines before any strategy
           should be trusted.
         </p>
       </section>

@@ -573,7 +573,7 @@ function updateDashboard() {
   renderBookEdge("draftkings", "#draftkingsLine", "#draftkingsEdge", draftkingsManual, draftkingsTeam, oddsEvent, home, away, model.modelHomeProbability);
   renderBookEdge("fanduel", "#fanduelLine", "#fanduelEdge", fanduelManual, fanduelTeam, oddsEvent, home, away, model.modelHomeProbability);
   document.querySelector("#generatedRead").textContent =
-    `${model.leader.name} is the ${model.risk} side. This is a conservative pregame model lean, not a live-betting projection. Live scores update from MLB; live odds need an odds feed.`;
+    `${model.leader.name} is the ${model.risk} side. This is a conservative pregame model lean, not an in-game projection. Live scores update from MLB; live market prices need an odds feed.`;
 }
 
 function renderFavoriteBets() {
@@ -701,7 +701,7 @@ function renderBacktest(log) {
       <article><span>Captured ROI</span><strong>Unavailable</strong><p>No saved odds loaded.</p></article>
       <article><span>Model version</span><strong>v0.4</strong><p>Calibrated pregame.</p></article>
     `;
-    historicalBacktest.innerHTML = `<p class="empty-state">Start the Node server to run the recent historical backtest.</p>`;
+    historicalBacktest.innerHTML = `<p class="empty-state">Start the Node server to review the recent model sample.</p>`;
     return;
   }
 
@@ -740,7 +740,7 @@ function renderBacktest(log) {
 
 async function renderHistoricalBacktest() {
   if (!historicalBacktest) return;
-  historicalBacktest.innerHTML = `<p class="empty-state">Running recent historical test...</p>`;
+  historicalBacktest.innerHTML = `<p class="empty-state">Loading recent model sample...</p>`;
 
   try {
     const test = await getJSON("/api/backtest/historical?days=14");
@@ -789,11 +789,11 @@ async function renderHistoricalBacktest() {
       </div>
       <div class="historical-buckets">${buckets}</div>
       <div class="historical-note">${escapeHTML(test.note)}</div>
-      <h3 class="mini-heading">Strongest historical leans</h3>
+      <h3 class="mini-heading">Strongest recent sample leans</h3>
       <div class="backtest-days">${samplePicks}</div>
     `;
   } catch {
-    historicalBacktest.innerHTML = `<p class="empty-state">Historical backtest is unavailable. Restart the local server after the update.</p>`;
+    historicalBacktest.innerHTML = `<p class="empty-state">Recent model sample is unavailable. Restart the local server after the update.</p>`;
   }
 }
 

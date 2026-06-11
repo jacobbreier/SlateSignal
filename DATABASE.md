@@ -1,6 +1,6 @@
 # SlateSignal Database Plan
 
-The local app uses `pick-log.json`. A production app should move these records into a database.
+The local app uses `pick-log.json`. A production app should move these model-run records into a database.
 
 Recommended first database: Supabase Postgres.
 
@@ -49,7 +49,7 @@ create table model_picks (
 
 ## Scheduled Jobs
 
-- Morning: call `/api/jobs/daily` to save the day's picks.
+- Morning: call `/api/jobs/daily` to save the day's model leans.
 - During games: call `/api/mlb/summary` every few minutes if you want warm cache/live scores.
 - Late night and next morning: call `/api/jobs/settle` to settle final scores.
 

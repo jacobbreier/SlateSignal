@@ -54,13 +54,13 @@ Required:
 
 Use Render Cron Jobs, Railway cron, GitHub Actions, or a hosted scheduler.
 
-Daily pick creation:
+Daily model lean creation:
 
 ```bash
 curl -X POST https://your-site.com/api/jobs/daily
 ```
 
-Settle picks:
+Settle final results:
 
 ```bash
 curl -X POST https://your-site.com/api/jobs/settle

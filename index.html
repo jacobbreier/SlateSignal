@@ -221,10 +221,10 @@
             <p class="eyebrow">Market edge</p>
             <h2>Compare the model to market prices.</h2>
             <p id="oddsSource">
-              Add an odds API key to compare the model against real sportsbook lines.
+              Market feed unavailable in this public preview. Enter a moneyline manually to compare it with the model fair line.
             </p>
             <p class="live-note">
-              Live scores refresh from MLB about once per minute. Live DraftKings/FanDuel odds require an odds feed.
+              Live scores refresh from MLB about once per minute. Automated market prices require a licensed odds feed.
             </p>
           </div>
           <div class="odds-grid">
@@ -235,8 +235,8 @@
             </article>
             <article class="odds-card">
               <span>DraftKings</span>
-              <strong id="draftkingsLine">Key needed</strong>
-              <p id="draftkingsEdge">Add The Odds API key in config.env to load DraftKings.</p>
+              <strong id="draftkingsLine">Manual</strong>
+              <p id="draftkingsEdge">Enter the listed DraftKings moneyline to calculate estimated value.</p>
               <label class="odds-input">
                 Team
                 <select id="draftkingsTeam"></select>
@@ -248,8 +248,8 @@
             </article>
             <article class="odds-card">
               <span>FanDuel</span>
-              <strong id="fanduelLine">Key needed</strong>
-              <p id="fanduelEdge">Add The Odds API key in config.env to load FanDuel.</p>
+              <strong id="fanduelLine">Manual</strong>
+              <p id="fanduelEdge">Enter the listed FanDuel moneyline to calculate estimated value.</p>
               <label class="odds-input">
                 Team
                 <select id="fanduelTeam"></select>

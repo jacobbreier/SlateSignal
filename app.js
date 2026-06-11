@@ -198,8 +198,8 @@ async function loadRealData() {
     state.odds = [];
     state.teamStats = new Map();
     state.pitcherStats = new Map();
-    state.source = "Using real MLB team names locally. Start the Node server for live MLB schedule and standings.";
-    state.oddsSource = "Start the Node server and add THE_ODDS_API_KEY to compare DraftKings/FanDuel.";
+    state.source = "Using built-in MLB team list. Live schedule and standings are unavailable.";
+    state.oddsSource = "Market feed unavailable in this preview. Enter a moneyline manually to compare fair value.";
     state.dataUpdatedAt = null;
     state.oddsUpdatedAt = null;
   }
@@ -547,10 +547,10 @@ function renderBookEdge(bookKey, labelId, detailId, manualInput, teamSelect, eve
   const price = Number.isFinite(manualPrice) && manualInput.value !== "" ? manualPrice : apiPrice;
 
   if (!Number.isFinite(price)) {
-    label.textContent = state.odds.length ? "No line" : "Type line";
+    label.textContent = state.odds.length ? "No line" : "Manual";
     detail.textContent = state.odds.length
       ? "No matching moneyline was returned. You can type the moneyline manually."
-      : "Type the sportsbook moneyline to calculate estimated EV.";
+      : "Enter the listed moneyline to calculate estimated value.";
     return;
   }
 
@@ -596,7 +596,7 @@ function updateDashboard() {
   renderBookEdge("draftkings", "#draftkingsLine", "#draftkingsEdge", draftkingsManual, draftkingsTeam, oddsEvent, home, away, model.modelHomeProbability);
   renderBookEdge("fanduel", "#fanduelLine", "#fanduelEdge", fanduelManual, fanduelTeam, oddsEvent, home, away, model.modelHomeProbability);
   document.querySelector("#generatedRead").textContent =
-    `${model.leader.name} is the ${model.risk} side. This is a conservative pregame model lean, not an in-game projection. Live scores update from MLB; live market prices need an odds feed.`;
+    `${model.leader.name} is the ${model.risk} side. This is a conservative pregame model lean, not an in-game projection. Live scores update from MLB; automated market prices require a licensed odds feed.`;
   whyLeanList.innerHTML = detailedPickReasons(model, home, away)
     .map((reason) => `<li>${escapeHTML(reason)}</li>`)
     .join("");
@@ -713,7 +713,7 @@ async function renderPickLog(existingLog) {
     recordCard.innerHTML = `
       <span>Model record</span>
       <strong>Unavailable</strong>
-      <p>Start the Node server to save and settle model leans automatically.</p>
+      <p>Model record is temporarily unavailable. Saved leans will appear when the results service responds.</p>
     `;
     renderBacktest();
   }
@@ -722,12 +722,12 @@ async function renderPickLog(existingLog) {
 function renderBacktest(log) {
   if (!log) {
     backtestSummary.innerHTML = `
-      <article><span>All-time</span><strong>Unavailable</strong><p>Start the Node server.</p></article>
+      <article><span>All-time</span><strong>Unavailable</strong><p>Results service is temporarily unavailable.</p></article>
       <article><span>Pending</span><strong>Not loaded</strong><p>No log loaded.</p></article>
       <article><span>Captured ROI</span><strong>Unavailable</strong><p>No saved odds loaded.</p></article>
       <article><span>Model version</span><strong>v0.4</strong><p>Calibrated pregame.</p></article>
     `;
-    historicalBacktest.innerHTML = `<p class="empty-state">Start the Node server to review the recent model sample.</p>`;
+    historicalBacktest.innerHTML = `<p class="empty-state">Recent model sample is temporarily unavailable.</p>`;
     return;
   }
 

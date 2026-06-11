@@ -749,7 +749,7 @@ async function buildSummary() {
       source: `Live MLB Stats API data for ${date}. Ratings use current standings and run differential.`,
       oddsSource: ODDS_API_KEY
         ? "DraftKings/FanDuel odds via The Odds API."
-        : "Add THE_ODDS_API_KEY to compare against DraftKings and FanDuel odds.",
+        : "Market feed unavailable in this preview. Enter a moneyline manually to compare fair value.",
       oddsUpdatedAt: ODDS_API_KEY ? new Date(now).toISOString() : null,
       teams: teams.teams || [],
       games,

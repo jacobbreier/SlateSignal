@@ -15,11 +15,6 @@ const themeToggle = document.querySelector("#themeToggle");
 const gamesList = document.querySelector("#gamesList");
 const betsList = document.querySelector("#betsList");
 const betOfDay = document.querySelector("#betOfDay");
-const recordCard = document.querySelector("#recordCard");
-const backtestSummary = document.querySelector("#backtestSummary");
-const backtestDays = document.querySelector("#backtestDays");
-const historicalBacktest = document.querySelector("#historicalBacktest");
-const resultsTableBody = document.querySelector("#resultsTableBody");
 const whyLeanList = document.querySelector("#whyLeanList");
 const draftkingsManual = document.querySelector("#draftkingsManual");
 const fanduelManual = document.querySelector("#fanduelManual");
@@ -40,7 +35,6 @@ const escapeHTML = (value = "") => String(value)
   .replace(/>/g, "&gt;")
   .replace(/"/g, "&quot;")
   .replace(/'/g, "&#39;");
-const safeClass = (value = "") => String(value).toLowerCase().replace(/[^a-z0-9_-]/g, "-");
 
 function normalizeName(name = "") {
   return name
@@ -208,7 +202,6 @@ async function loadRealData() {
 
   fillTeams();
   renderGames();
-  renderPickLog();
 }
 
 function scheduleRefresh() {
@@ -533,7 +526,7 @@ function detailedPickReasons(model, home, away) {
     `${model.leader.name} is the current ${leaderSide} lean at ${model.modelLeaderProbability.toFixed(1)}% model probability.`,
     `Fair line is ${formatAmerican(model.fairLine)}, with signal strength capped at ${model.confidence.toFixed(0)}% to avoid false precision.`,
     ...reasons,
-    `Risk label: ${model.risk}. This should be compared against market price and later final results.`
+    `Risk label: ${model.risk}. This should be compared against market price and closing-line data before being trusted.`
   ];
 }
 
@@ -657,199 +650,6 @@ function renderFavoriteBets() {
     `;
     })
     .join("");
-
-  saveTodaysPicks(picks);
-}
-
-async function saveTodaysPicks(picks) {
-  if (!state.games.length) return;
-  const date = state.source.match(/\d{2}\/\d{2}\/\d{4}|\d{4}-\d{2}-\d{2}/)?.[0] || localISODate();
-  const payload = {
-    date,
-    picks: picks.map((pick) => ({
-      gamePk: pick.game.gamePk,
-      matchup: `${pick.away.name} at ${pick.home.name}`,
-      pickTeamId: pick.model.leader.id,
-      pickTeamName: pick.model.leader.name,
-      edge: Number(pick.model.edge.toFixed(2)),
-      signal: Number(pick.model.confidence.toFixed(0)),
-      fairLine: formatAmerican(pick.model.fairLine),
-      modelVersion: MODEL_VERSION,
-      market: pick.market,
-      factors: modelFactorSnapshot(pick.model),
-      reasons: pickReasons(pick.model)
-    }))
-  };
-
-  try {
-    renderPickLog(await postJSON("/api/pick-log/today", payload));
-  } catch {
-    renderPickLog();
-  }
-}
-
-async function renderPickLog(existingLog) {
-  try {
-    const log = existingLog || await getJSON("/api/pick-log");
-    const totals = log.totals || { wins: 0, losses: 0, pending: 0 };
-    const latest = log.days?.[0];
-    const today = localISODate();
-    const todayLog = (log.days || []).find((day) => day.date === today);
-    const yesterdayDate = localISODate(-1);
-    const yesterdayLog = (log.days || []).find((day) => day.date === yesterdayDate);
-    const settledDays = (log.days || []).filter((day) => day.status === "settled").length;
-    const dayLine = (label, day) => day
-      ? `${label}: ${day.wins || 0}-${day.losses || 0}, ${day.pending || 0} pending`
-      : `${label}: no saved leans`;
-    const trackedRoi = totals.roi === null || totals.roi === undefined
-      ? "No captured odds settled yet"
-      : `${totals.roi > 0 ? "+" : ""}${totals.roi}% ROI on ${totals.pricedPicks} priced leans`;
-    const recordHeadline = totals.wins + totals.losses ? `${totals.wins}-${totals.losses}` : "No finals";
-    recordCard.innerHTML = `
-      <span>Model record</span>
-      <strong>${recordHeadline}</strong>
-      <p>${dayLine("Today", todayLog)} · ${dayLine("Yesterday", yesterdayLog)} · ${trackedRoi}. ${settledDays} settled days so far.</p>
-    `;
-    renderBacktest(log);
-  } catch {
-    recordCard.innerHTML = `
-      <span>Model record</span>
-      <strong>Unavailable</strong>
-      <p>Model record is temporarily unavailable. Saved leans will appear when the results service responds.</p>
-    `;
-    renderBacktest();
-  }
-}
-
-function renderBacktest(log) {
-  if (!log) {
-    backtestSummary.innerHTML = `
-      <article><span>All-time</span><strong>Unavailable</strong><p>Results service is temporarily unavailable.</p></article>
-      <article><span>Pending</span><strong>Not loaded</strong><p>No log loaded.</p></article>
-      <article><span>Captured ROI</span><strong>Unavailable</strong><p>No saved odds loaded.</p></article>
-      <article><span>Model version</span><strong>v0.4</strong><p>Calibrated pregame.</p></article>
-    `;
-    historicalBacktest.innerHTML = `<p class="empty-state">Recent model sample is temporarily unavailable.</p>`;
-    resultsTableBody.innerHTML = `<tr><td colspan="5">Saved result rows are temporarily unavailable.</td></tr>`;
-    return;
-  }
-
-  const totals = log.totals || { wins: 0, losses: 0, pending: 0 };
-  const decided = totals.wins + totals.losses;
-  const winRate = decided ? `${((totals.wins / decided) * 100).toFixed(1)}%` : "N/A";
-  const roiLabel = totals.roi === null || totals.roi === undefined ? "N/A" : `${totals.roi > 0 ? "+" : ""}${totals.roi}%`;
-  const profitLabel = totals.profit > 0 ? `+$${totals.profit.toFixed(2)}` : `$${Number(totals.profit || 0).toFixed(2)}`;
-  const savedHeadline = decided ? `${totals.wins}-${totals.losses}` : "No finals";
-  backtestSummary.innerHTML = `
-    <article><span>Saved leans</span><strong>${savedHeadline}</strong><p>${winRate} win rate on settled saved leans.</p></article>
-    <article><span>Pending</span><strong>${totals.pending}</strong><p>Waiting for MLB finals.</p></article>
-    <article><span>Captured ROI</span><strong>${roiLabel}</strong><p>${profitLabel} profit on ${totals.pricedPicks || 0} leans with saved odds.</p></article>
-    <article><span>Model version</span><strong>v0.4</strong><p>Calibrated pregame.</p></article>
-  `;
-
-  renderHistoricalBacktest();
-
-  const days = log.days || [];
-  if (!days.length) {
-    backtestDays.innerHTML = `<p class="empty-state">Saved lean history will appear here.</p>`;
-    resultsTableBody.innerHTML = `<tr><td colspan="5">No saved model results yet.</td></tr>`;
-    return;
-  }
-
-  const rows = days
-    .flatMap((day) => (day.picks || []).map((pick) => ({ day, pick })))
-    .slice(0, 30);
-
-  resultsTableBody.innerHTML = rows.length
-    ? rows.map(({ day, pick }) => `
-      <tr>
-        <td>${escapeHTML(day.date)}</td>
-        <td>${escapeHTML(pick.matchup || "Matchup")}</td>
-        <td>${escapeHTML(pick.pickTeamName || "Lean pending")}</td>
-        <td>${escapeHTML(pick.finalScore || "Pending")}</td>
-        <td><span class="result-pill ${safeClass(pick.result || "pending")}">${escapeHTML(pick.result || "pending")}</span></td>
-      </tr>
-    `).join("")
-    : `<tr><td colspan="5">No saved model results yet.</td></tr>`;
-
-  backtestDays.innerHTML = days
-    .slice(0, 14)
-      .map((day) => `
-      <article class="backtest-day">
-        <span>${escapeHTML(day.date)}</span>
-        <strong>${day.wins || 0}-${day.losses || 0}</strong>
-        <p>${day.pending || 0} pending · ${day.picks?.length || 0} saved leans · ${day.roi === null || day.roi === undefined ? "no captured ROI" : `${day.roi > 0 ? "+" : ""}${day.roi}% ROI`} · ${escapeHTML(day.status || "pending")}</p>
-        <div class="result-lines">
-          ${(day.picks || []).slice(0, 4).map((pick) => `
-            <div>
-              <span>${escapeHTML(pick.matchup || "Matchup")}</span>
-              <strong>${escapeHTML(pick.pickTeamName || "Lean pending")}</strong>
-              <small>${escapeHTML(pick.finalScore || "Final pending")} · ${escapeHTML(pick.result || "pending")}</small>
-            </div>
-          `).join("")}
-        </div>
-      </article>
-    `)
-    .join("");
-}
-
-async function renderHistoricalBacktest() {
-  if (!historicalBacktest) return;
-  historicalBacktest.innerHTML = `<p class="empty-state">Loading recent model sample...</p>`;
-
-  try {
-    const test = await getJSON("/api/backtest/historical?days=14");
-    if (!test.games) {
-      historicalBacktest.innerHTML = `<p class="empty-state">${escapeHTML(test.note || "No completed historical games were available for this window.")}</p>`;
-      return;
-    }
-
-    const buckets = (test.buckets || [])
-      .map((bucket) => `
-        <article>
-          <span>${escapeHTML(bucket.label)}</span>
-          <strong>${bucket.wins}-${bucket.losses}</strong>
-          <p>${bucket.winRate === null ? "N/A" : `${bucket.winRate}%`} win rate · ${bucket.games} games</p>
-        </article>
-      `)
-      .join("");
-
-    const samplePicks = (test.samplePicks || [])
-      .map((pick) => `
-        <article class="backtest-day">
-          <span>${escapeHTML(pick.date)} · ${escapeHTML(pick.result)}</span>
-          <strong>${escapeHTML(pick.pickTeamName)}</strong>
-          <p>${escapeHTML(pick.matchup)} · final ${escapeHTML(pick.finalScore)} · ${pick.signal}% signal · fair ${escapeHTML(pick.fairLine)}</p>
-        </article>
-      `)
-      .join("");
-
-    historicalBacktest.innerHTML = `
-      <div class="historical-summary">
-        <article>
-          <span>Recent sample</span>
-          <strong>${test.wins}-${test.losses}</strong>
-          <p>${test.winRate}% win rate across ${test.games} completed games.</p>
-        </article>
-        <article>
-          <span>Estimated ROI</span>
-          <strong>${test.roi > 0 ? "+" : ""}${test.roi}%</strong>
-          <p>Flat $100 even-money estimate; saved leans use captured odds when available.</p>
-        </article>
-        <article>
-          <span>Dates tested</span>
-          <strong>${test.datesTested}</strong>
-          <p>${escapeHTML(test.modelVersion)}</p>
-        </article>
-      </div>
-      <div class="historical-buckets">${buckets}</div>
-      <div class="historical-note">${escapeHTML(test.note)}</div>
-      <h3 class="mini-heading">Strongest recent sample leans</h3>
-      <div class="backtest-days">${samplePicks}</div>
-    `;
-  } catch {
-    historicalBacktest.innerHTML = `<p class="empty-state">Recent model sample is temporarily unavailable.</p>`;
-  }
 }
 
 function selectedContext() {
@@ -915,7 +715,7 @@ function analystReply(question) {
   }
 
   if (q.includes("confidence") || q.includes("risk")) {
-    return `Signal strength is ${model.confidence.toFixed(0)}%. It is deliberately capped because MLB game predictions should stay conservative and be judged against saved results and closing lines. This matchup is tagged as ${model.risk}.`;
+    return `Signal strength is ${model.confidence.toFixed(0)}%. It is deliberately capped because MLB game predictions should stay conservative and be judged against closing lines and a properly stored record. This matchup is tagged as ${model.risk}.`;
   }
 
   return `${fair}. The biggest driver is ${factor[0]}. Ask me about odds, pitcher matchup, offense, confidence, or why the model likes a side and I can break it down.`;

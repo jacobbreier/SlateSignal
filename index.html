@@ -19,9 +19,7 @@
       <nav class="nav" aria-label="Primary navigation">
         <a href="#dashboard">Dashboard</a>
         <a href="#today">Today</a>
-        <a href="#results">Results</a>
         <a href="#methodology">Methodology</a>
-        <a href="#project-notes">Project</a>
       </nav>
       <button class="icon-button" id="themeToggle" type="button" aria-label="Toggle display density">
         ◐
@@ -88,7 +86,7 @@
           <p>
             SlateSignal is designed as a portfolio-quality sports analytics app:
             it pulls live MLB data, generates conservative matchup signals, explains
-            the model inputs, tracks saved leans, and compares fair lines to market prices.
+            the model inputs, and compares fair lines to market prices.
           </p>
         </div>
         <div class="project-grid">
@@ -144,11 +142,6 @@
           <div class="bets-list" id="betsList">
             <p class="empty-state">Loading model leans...</p>
           </div>
-            <div class="record-card" id="recordCard">
-              <span>Model record</span>
-            <strong>No finals</strong>
-            <p>Saved leans will settle after MLB marks games final.</p>
-            </div>
         </section>
 
         <div class="simulator-layout">
@@ -340,54 +333,6 @@
           </form>
         </section>
 
-        <section class="backtest-panel" id="results" aria-label="Model results">
-          <div class="section-heading odds-heading">
-            <p class="eyebrow">Model results</p>
-            <h2>Track how SlateSignal performs over time.</h2>
-            <p>
-              This combines the app's saved daily leans with a recent MLB sample
-              using standings from before each game date.
-            </p>
-          </div>
-          <div class="backtest-summary" id="backtestSummary">
-            <article><span>Saved leans</span><strong>No finals</strong><p>No settled leans yet.</p></article>
-            <article><span>Pending</span><strong>0</strong><p>Waiting for finals.</p></article>
-            <article><span>Captured ROI</span><strong>N/A</strong><p>Waiting for saved odds.</p></article>
-            <article><span>Model version</span><strong>v0.4</strong><p>Calibrated pregame.</p></article>
-          </div>
-          <div class="confidence-note">
-            <span>Confidence guardrail</span>
-            <p>
-              MLB games are high variance, so SlateSignal caps model probabilities and
-              treats every lean as a research signal. A 56% model probability means a small
-              projected edge, not certainty.
-            </p>
-          </div>
-          <div class="historical-backtest" id="historicalBacktest">
-            <p class="empty-state">Recent model sample will appear here.</p>
-          </div>
-          <div class="results-table-wrap" id="resultsTableWrap">
-            <table class="results-table">
-              <thead>
-                <tr>
-                  <th>Date</th>
-                  <th>Game</th>
-                  <th>Lean</th>
-                  <th>Final</th>
-                  <th>Result</th>
-                </tr>
-              </thead>
-              <tbody id="resultsTableBody">
-                <tr>
-                  <td colspan="5">Saved result rows will appear here.</td>
-                </tr>
-              </tbody>
-            </table>
-          </div>
-          <div class="backtest-days" id="backtestDays">
-            <p class="empty-state">Saved lean history will appear here.</p>
-          </div>
-        </section>
       </section>
 
       <section class="methodology-section" id="methodology" aria-label="Model methodology">
@@ -396,7 +341,8 @@
           <h2>How SlateSignal creates a model lean.</h2>
           <p>
             The model is intentionally conservative. It is built to create research signals,
-            not certainty, and every output should be judged against historical results and market prices.
+            not certainty, and every output should be judged against market prices, closing lines,
+            and a properly stored record before being trusted.
           </p>
         </div>
         <div class="methodology-grid">
@@ -416,7 +362,7 @@
               <li>Probabilities are regressed toward 50/50</li>
               <li>Model probabilities are capped between 42% and 58%</li>
               <li>Signal strength is capped to avoid false precision</li>
-              <li>Saved leans are settled only after MLB marks games final</li>
+              <li>Every output is treated as a pregame research signal</li>
             </ul>
           </article>
           <article>
@@ -442,61 +388,8 @@
           </article>
           <article>
             <span>Storage path</span>
-            <h3>Local log now, database next</h3>
-            <p>The current record uses a local JSON log. The production path is hosted Postgres with scheduled daily creation and settlement jobs.</p>
-          </article>
-        </div>
-      </section>
-
-      <section class="market-section" id="project-notes" aria-label="Project notes">
-        <div class="section-heading">
-          <p class="eyebrow">Project notes</p>
-          <h2>What is built now, and what would make it production-grade.</h2>
-          <p>
-            This section is written for interviews: it separates working features from
-            clear next steps without pretending future business features are already live.
-          </p>
-        </div>
-
-        <div class="market-grid">
-          <article>
-            <span class="plan-badge">Built</span>
-            <h3>Live MLB dashboard</h3>
-            <p>Real team data, schedule data, probable pitcher context, fair-line comparison, live score status, and saved model leans.</p>
-            <strong>Now</strong>
-          </article>
-          <article class="featured-plan">
-            <span class="plan-badge">Next</span>
-            <h3>Professional data layer</h3>
-            <p>Persistent database storage, closing odds, lineup confirmations, bullpen rest, weather, and scheduled background jobs.</p>
-            <strong>Roadmap</strong>
-          </article>
-          <article>
-            <span class="plan-badge">Business</span>
-            <h3>Paid research reports</h3>
-            <p>The monetized version would sell deeper reports, alerts, saved watchlists, and shareable matchup pages after results are validated.</p>
-            <strong>Later</strong>
-          </article>
-        </div>
-      </section>
-
-      <section class="interview-section" aria-label="Interview explanation">
-        <div>
-          <p class="eyebrow">Build story</p>
-          <h2>How to explain this project in an interview.</h2>
-        </div>
-        <div class="case-study-grid">
-          <article>
-            <span>Challenge</span>
-            <p>Sports data products can look impressive while hiding how the numbers are made. I wanted the model, factors, and limitations to be visible.</p>
-          </article>
-          <article>
-            <span>Implementation</span>
-            <p>I built a Node-backed MLB dashboard with live data ingestion, conservative model scoring, fair-line conversion, matchup explanations, and result tracking.</p>
-          </article>
-          <article>
-            <span>Next step</span>
-            <p>The production version would add persistent storage, licensed closing odds, lineup/weather/bullpen factors, and scheduled jobs to validate results over time.</p>
+            <h3>Database needed for records</h3>
+            <p>A reliable win/loss record should use hosted storage and scheduled settlement jobs. Until then, SlateSignal focuses on matchup analysis.</p>
           </article>
         </div>
       </section>
@@ -504,8 +397,8 @@
       <section class="disclaimer-section" aria-label="Disclaimer">
         <p>
           SlateSignal outputs are informational and experimental. They are not betting advice.
-          The model must be reviewed against saved results and closing lines before any strategy
-          should be trusted.
+          A reliable record requires persistent storage, scheduled final-score settlement,
+          and closing-line data before any strategy should be trusted.
         </p>
       </section>
     </main>

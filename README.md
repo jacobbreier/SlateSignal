@@ -63,11 +63,6 @@ Top model leans:
 
 The app ranks every game on today's slate and surfaces a top model signal. This is a model lean based on current data, not betting advice.
 
-Model record:
-
-The app saves each day's model leans in `pick-log.json`. When you open the site later, the server checks MLB final scores and updates the running win/loss record automatically. This works while using the local Node server; a deployed version needs persistent storage so the log survives redeploys.
-Today's games stay pending until MLB marks them Final, so the record shows "No finals" until at least one saved lean settles.
-
 Live scores:
 
 The app refreshes MLB score/status data about once per minute while open. Live sportsbook odds still require an odds provider such as The Odds API.
@@ -81,10 +76,7 @@ Professional polish:
 - The UI shows the current model version.
 - The dashboard displays MLB data freshness and market-feed status.
 - Top model leans include the leading reasons behind each signal.
-- Saved leans include a snapshot of the model factors used at run time.
-- The Results section includes summary metrics plus a table of saved leans, final scores, and outcomes.
 - The methodology section explains confidence caps, data sources, current limits, and production upgrades.
-- The model results section summarizes saved-lean performance, captured-odds ROI when market lines are available, and a recent MLB sample using standings from before each game date.
 - The app labels outputs as model signals, not certainty.
 
 Good next build steps:
@@ -95,7 +87,7 @@ Good next build steps:
 - Add weather and ballpark factors
 - Add odds movement from a paid provider
 - Add saved watchlists after persistent storage is in place
-- Add a historical sportsbook odds provider so older model results can use true closing prices instead of flat even-money assumptions
+- Add persistent storage and scheduled final-score settlement before showing a public win/loss record
 - Add shareable matchup report pages for baseball creators
 
 Current data source:
